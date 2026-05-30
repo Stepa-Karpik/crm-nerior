@@ -18,6 +18,10 @@ async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (!response.ok) {
     let message = response.statusText
     try { message = (await response.json()).error?.message || message } catch {}
+    if (response.status === 401 && typeof window !== 'undefined') {
+      const returnTo = encodeURIComponent(window.location.href)
+      window.location.href = `https://auth.nerior.ru/login?return_to=${returnTo}`
+    }
     throw new ApiError(response.status, message)
   }
   return response.json()
