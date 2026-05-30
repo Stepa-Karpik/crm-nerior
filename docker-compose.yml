@@ -48,7 +48,7 @@ services:
     depends_on:
       - crm-api
     ports:
-      - "127.0.0.1:3100:3100"
+      - "127.0.0.1:3100:3000"
 
 volumes:
   crm_postgres_data:
