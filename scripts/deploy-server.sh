@@ -11,6 +11,6 @@ cd "$APP_DIR"
 git fetch origin main
 git reset --hard origin/main
 if [ ! -f .env ]; then cp .env.example .env; fi
-docker network inspect nerior_shared >/dev/null 2>&1 || docker network create nerior_shared
+docker network inspect ecosystem >/dev/null 2>&1 || docker network create ecosystem
 docker compose --project-name nerior_crm up -d --build --remove-orphans
 docker image prune -f

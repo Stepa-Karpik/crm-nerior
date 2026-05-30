@@ -22,18 +22,18 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://nerior:nerior_crm_password@crm-postgres:5432/nerior_crm}
-      IDENTITY_INTERNAL_URL: ${IDENTITY_INTERNAL_URL:-http://identity-api-1:8100/api/v1}
+      IDENTITY_INTERNAL_URL: ${IDENTITY_INTERNAL_URL:-http://identity:8300/api/v1}
       ALLOW_DEV_AUTH: ${ALLOW_DEV_AUTH:-false}
-      PLANNER_INTERNAL_URL: ${PLANNER_INTERNAL_URL:-http://smart_planner-api-1:8000/api/v1}
-      DOCUMENTS_INTERNAL_URL: ${DOCUMENTS_INTERNAL_URL:-http://documents-api-1:8200/api/v1}
+      PLANNER_INTERNAL_URL: ${PLANNER_INTERNAL_URL:-http://planner-api:8000/api/v1}
+      DOCUMENTS_INTERNAL_URL: ${DOCUMENTS_INTERNAL_URL:-http://documents:8200/api/v1}
     depends_on:
       crm-postgres:
         condition: service_healthy
     ports:
-      - "127.0.0.1:8300:8300"
+      - "127.0.0.1:8350:8300"
     networks:
       - default
-      - nerior_shared
+      - ecosystem
 
   crm-frontend:
     build:
@@ -54,5 +54,5 @@ volumes:
   crm_postgres_data:
 
 networks:
-  nerior_shared:
+  ecosystem:
     external: true
