@@ -22,6 +22,8 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://nerior:nerior_crm_password@crm-postgres:5432/nerior_crm}
+      IDENTITY_INTERNAL_URL: ${IDENTITY_INTERNAL_URL:-http://identity-api-1:8100/api/v1}
+      ALLOW_DEV_AUTH: ${ALLOW_DEV_AUTH:-false}
       PLANNER_INTERNAL_URL: ${PLANNER_INTERNAL_URL:-http://smart_planner-api-1:8000/api/v1}
       DOCUMENTS_INTERNAL_URL: ${DOCUMENTS_INTERNAL_URL:-http://documents-api-1:8200/api/v1}
     depends_on:

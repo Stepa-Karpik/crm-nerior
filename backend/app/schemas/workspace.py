@@ -23,7 +23,7 @@ class WorkspaceUpdate(BaseModel):
 
 class WorkspaceRead(OrmModel):
     id: UUID
-    owner_user_id: UUID
+    owner_user_id: str
     name: str
     description: str | None
     icon: str | None
@@ -36,7 +36,7 @@ class WorkspaceRead(OrmModel):
 
 
 class WorkspaceMemberInvite(BaseModel):
-    user_id: UUID
+    user_id: str
     display_name: str | None = None
     email: str | None = None
     role_key: WorkspaceRole = WorkspaceRole.MEMBER
@@ -45,7 +45,7 @@ class WorkspaceMemberInvite(BaseModel):
 class WorkspaceMemberRead(OrmModel):
     id: UUID
     workspace_id: UUID
-    user_id: UUID
+    user_id: str
     display_name: str | None
     email: str | None
     role_key: str

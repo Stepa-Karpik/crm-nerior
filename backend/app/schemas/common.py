@@ -10,7 +10,7 @@ class OrmModel(BaseModel):
 
 
 class UserContext(BaseModel):
-    user_id: UUID
+    user_id: str
     username: str = "user"
     display_name: str | None = None
     email: str | None = None
@@ -21,7 +21,7 @@ class AuditRead(OrmModel):
     id: UUID
     workspace_id: UUID | None
     project_id: UUID | None
-    actor_user_id: UUID | None
+    actor_user_id: str | None
     action: str
     target_type: str
     target_id: str

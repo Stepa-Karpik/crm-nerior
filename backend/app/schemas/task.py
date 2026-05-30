@@ -17,7 +17,7 @@ class TaskCreate(BaseModel):
     title: str = Field(min_length=1, max_length=220)
     description: str | None = None
     priority: Priority = Priority.MEDIUM
-    assignee_user_id: UUID | None = None
+    assignee_user_id: str | None = None
     deadline_at: datetime | None = None
 
 
@@ -26,7 +26,7 @@ class TaskUpdate(BaseModel):
     description: str | None = None
     priority: Priority | None = None
     status: TaskStatus | None = None
-    assignee_user_id: UUID | None = None
+    assignee_user_id: str | None = None
     deadline_at: datetime | None = None
 
 
@@ -41,12 +41,12 @@ class TaskRead(OrmModel):
     description: str | None
     priority: str
     status: str
-    assignee_user_id: UUID | None
+    assignee_user_id: str | None
     deadline_at: datetime | None
     planner_event_id: str | None
     planner_sync_status: str
     burned_at: datetime | None
-    created_by_user_id: UUID
+    created_by_user_id: str
     created_at: datetime
     updated_at: datetime
     fire_stage: int = 0

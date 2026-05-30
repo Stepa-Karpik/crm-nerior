@@ -9,7 +9,7 @@ from app.core.db import Base, engine
 from app.main import app
 
 client = TestClient(app)
-HEADERS = {"x-user-id": "00000000-0000-0000-0000-000000000001", "x-username": "karpik", "x-display-name": "karpik"}
+HEADERS = {"x-user-id": "usr_dev_karpik", "x-username": "karpik", "x-display-name": "karpik"}
 
 
 def setup_function():
@@ -48,6 +48,6 @@ def test_workspace_project_task_weekly_flow():
 
 def test_non_member_cannot_read_workspace():
     workspace = client.post("/api/v1/workspaces", json={"name": "Private"}, headers=HEADERS).json()
-    other = {"x-user-id": "00000000-0000-0000-0000-000000000099", "x-username": "guest"}
+    other = {"x-user-id": "usr_other", "x-username": "guest"}
     response = client.get(f"/api/v1/workspaces/{workspace['id']}", headers=other)
     assert response.status_code == 403

@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./crm.db"
     identity_cookie_domain: str = ".nerior.ru"
     auth_login_url: str = "https://auth.nerior.ru/login"
+    identity_internal_url: str = "http://127.0.0.1:8100/api/v1"
+    allow_dev_auth: bool = True
     planner_internal_url: str = "http://127.0.0.1:8000/api/v1"
     documents_internal_url: str = "http://127.0.0.1:8200/api/v1"
     internal_api_key: str = ""

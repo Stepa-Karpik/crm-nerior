@@ -26,7 +26,7 @@ class Workspace(Base):
     __tablename__ = "workspaces"
 
     id: Mapped[uuid.UUID] = uuid_pk()
-    owner_user_id: Mapped[uuid.UUID] = mapped_column(GUID(), index=True)
+    owner_user_id: Mapped[str] = mapped_column(String(128), index=True)
     name: Mapped[str] = mapped_column(String(160), nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
     icon: Mapped[str | None] = mapped_column(String(64))
@@ -46,12 +46,12 @@ class WorkspaceMember(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     workspace_id: Mapped[uuid.UUID] = mapped_column(GUID(), ForeignKey("workspaces.id"), index=True)
-    user_id: Mapped[uuid.UUID] = mapped_column(GUID(), index=True)
+    user_id: Mapped[str] = mapped_column(String(128), index=True)
     display_name: Mapped[str | None] = mapped_column(String(160))
     email: Mapped[str | None] = mapped_column(String(255))
     role_key: Mapped[str] = mapped_column(String(48), default="member")
     status: Mapped[str] = mapped_column(String(32), default="active")
-    invited_by_user_id: Mapped[uuid.UUID | None] = mapped_column(GUID())
+    invited_by_user_id: Mapped[str | None] = mapped_column(String(128))
     joined_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
@@ -65,7 +65,7 @@ class WorkspaceGroup(Base):
     id: Mapped[uuid.UUID] = uuid_pk()
     workspace_id: Mapped[uuid.UUID] = mapped_column(GUID(), ForeignKey("workspaces.id"), index=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -76,7 +76,7 @@ class WorkspaceGroupMember(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     workspace_group_id: Mapped[uuid.UUID] = mapped_column(GUID(), ForeignKey("workspace_groups.id"), index=True)
-    user_id: Mapped[uuid.UUID] = mapped_column(GUID(), index=True)
+    user_id: Mapped[str] = mapped_column(String(128), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
 
 
@@ -89,10 +89,10 @@ class Project(Base):
     description: Mapped[str | None] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(32), default="active")
     visibility: Mapped[str] = mapped_column(String(32), default="project")
-    manager_user_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), index=True)
+    manager_user_id: Mapped[str | None] = mapped_column(String(128), index=True)
     planner_calendar_id: Mapped[str | None] = mapped_column(String(128))
     documents_scope_id: Mapped[str | None] = mapped_column(String(128))
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -103,7 +103,7 @@ class ProjectMember(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     project_id: Mapped[uuid.UUID] = mapped_column(GUID(), ForeignKey("projects.id"), index=True)
-    user_id: Mapped[uuid.UUID] = mapped_column(GUID(), index=True)
+    user_id: Mapped[str] = mapped_column(String(128), index=True)
     role_key: Mapped[str] = mapped_column(String(48), default="executor")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
@@ -121,7 +121,7 @@ class AccessPolicy(Base):
     action: Mapped[str] = mapped_column(String(80), index=True)
     rule: Mapped[str] = mapped_column(String(16), default="allow")
     source: Mapped[str] = mapped_column(String(24), default="direct")
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
 
 
@@ -135,7 +135,7 @@ class Company(Base):
     tax_id: Mapped[str | None] = mapped_column(String(64))
     address: Mapped[str | None] = mapped_column(Text)
     website: Mapped[str | None] = mapped_column(String(255))
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -151,7 +151,7 @@ class Contact(Base):
     phone: Mapped[str | None] = mapped_column(String(80))
     email: Mapped[str | None] = mapped_column(String(255))
     telegram: Mapped[str | None] = mapped_column(String(120))
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -170,8 +170,8 @@ class Deal(Base):
     probability: Mapped[int] = mapped_column(Integer, default=50)
     stage: Mapped[str] = mapped_column(String(80), default="new_request")
     deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    responsible_user_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), index=True)
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    responsible_user_id: Mapped[str | None] = mapped_column(String(128), index=True)
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -188,9 +188,9 @@ class Lead(Base):
     source: Mapped[str | None] = mapped_column(String(120))
     interest: Mapped[str | None] = mapped_column(Text)
     comment: Mapped[str | None] = mapped_column(Text)
-    responsible_user_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), index=True)
+    responsible_user_id: Mapped[str | None] = mapped_column(String(128), index=True)
     status: Mapped[str] = mapped_column(String(64), default="new")
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -208,13 +208,13 @@ class CrmTask(Base):
     description: Mapped[str | None] = mapped_column(Text)
     priority: Mapped[str] = mapped_column(String(24), default="medium", index=True)
     status: Mapped[str] = mapped_column(String(32), default="not_started", index=True)
-    assignee_user_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), index=True)
+    assignee_user_id: Mapped[str | None] = mapped_column(String(128), index=True)
     deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
     planner_event_id: Mapped[str | None] = mapped_column(String(128), index=True)
     planner_sync_status: Mapped[str] = mapped_column(String(32), default="pending")
     burned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     sort_order: Mapped[float] = mapped_column(Numeric(12, 4), default=0)
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -227,7 +227,7 @@ class KanbanBoard(Base):
     project_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), ForeignKey("projects.id"), index=True)
     name: Mapped[str] = mapped_column(String(160), nullable=False)
     view_type: Mapped[str] = mapped_column(String(32), default="weekly")
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -256,7 +256,7 @@ class EntityLink(Base):
     target_type: Mapped[str] = mapped_column(String(80), index=True)
     target_id: Mapped[str] = mapped_column(String(160), index=True)
     relation_type: Mapped[str] = mapped_column(String(80), default="related")
-    created_by_user_id: Mapped[uuid.UUID] = mapped_column(GUID())
+    created_by_user_id: Mapped[str] = mapped_column(String(128))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
 
 
@@ -265,7 +265,7 @@ class PlannerIntegrationSettings(Base):
     __table_args__ = (UniqueConstraint("user_id", name="uq_planner_crm_settings_user"),)
 
     id: Mapped[uuid.UUID] = uuid_pk()
-    user_id: Mapped[uuid.UUID] = mapped_column(GUID(), index=True)
+    user_id: Mapped[str] = mapped_column(String(128), index=True)
     crm_routes_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     crm_deadline_notifications_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     crm_deadline_notice_hours: Mapped[int] = mapped_column(Integer, default=24)
@@ -280,7 +280,7 @@ class AuditLog(Base):
     id: Mapped[uuid.UUID] = uuid_pk()
     workspace_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), index=True)
     project_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), index=True)
-    actor_user_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), index=True)
+    actor_user_id: Mapped[str | None] = mapped_column(String(128), index=True)
     action: Mapped[str] = mapped_column(String(120), index=True)
     target_type: Mapped[str] = mapped_column(String(80), index=True)
     target_id: Mapped[str] = mapped_column(String(160), index=True)

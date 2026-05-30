@@ -62,7 +62,7 @@ class DealCreate(BaseModel):
     probability: int = Field(default=50, ge=0, le=100)
     stage: str = "new_request"
     deadline_at: datetime | None = None
-    responsible_user_id: UUID | None = None
+    responsible_user_id: str | None = None
 
 
 class DealRead(OrmModel):
@@ -77,7 +77,7 @@ class DealRead(OrmModel):
     probability: int
     stage: str
     deadline_at: datetime | None
-    responsible_user_id: UUID | None
+    responsible_user_id: str | None
     created_at: datetime
     updated_at: datetime
 
@@ -91,7 +91,7 @@ class LeadCreate(BaseModel):
     source: str | None = None
     interest: str | None = None
     comment: str | None = None
-    responsible_user_id: UUID | None = None
+    responsible_user_id: str | None = None
     status: str = "new"
 
 
@@ -105,7 +105,7 @@ class LeadRead(OrmModel):
     source: str | None
     interest: str | None
     comment: str | None
-    responsible_user_id: UUID | None
+    responsible_user_id: str | None
     status: str
     created_at: datetime
     updated_at: datetime

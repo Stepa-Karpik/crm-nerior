@@ -46,15 +46,15 @@ def _matches(grants: set[str], action: str) -> bool:
     return False
 
 
-def workspace_member(session: Session, workspace_id: UUID, user_id: UUID) -> WorkspaceMember | None:
+def workspace_member(session: Session, workspace_id: UUID, user_id: str) -> WorkspaceMember | None:
     return session.scalar(select(WorkspaceMember).where(WorkspaceMember.workspace_id == workspace_id, WorkspaceMember.user_id == user_id, WorkspaceMember.status == "active"))
 
 
-def project_member(session: Session, project_id: UUID, user_id: UUID) -> ProjectMember | None:
+def project_member(session: Session, project_id: UUID, user_id: str) -> ProjectMember | None:
     return session.scalar(select(ProjectMember).where(ProjectMember.project_id == project_id, ProjectMember.user_id == user_id))
 
 
-def check_permission(session: Session, *, user_id: UUID, action: str, target_type: str, target_id: UUID, workspace_id: UUID, project_id: UUID | None = None, is_platform_admin: bool = False) -> PermissionResult:
+def check_permission(session: Session, *, user_id: str, action: str, target_type: str, target_id: UUID, workspace_id: UUID, project_id: UUID | None = None, is_platform_admin: bool = False) -> PermissionResult:
     if is_platform_admin:
         return PermissionResult(True, "platform admin", "platform_admin")
 

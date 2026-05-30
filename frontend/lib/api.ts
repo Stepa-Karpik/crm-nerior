@@ -1,8 +1,6 @@
 import type { Company, Contact, Deal, Lead, Project, Task, WeeklyBoard, Workspace } from './types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8300/api/v1'
-const DEV_USER_ID = '00000000-0000-0000-0000-000000000001'
-
 export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message) }
 }
@@ -12,11 +10,9 @@ async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     ...init,
     headers: {
       'content-type': 'application/json',
-      'x-user-id': DEV_USER_ID,
-      'x-username': 'karpik',
-      'x-display-name': 'karpik',
       ...(init.headers || {})
     },
+    credentials: 'include',
     cache: 'no-store'
   })
   if (!response.ok) {

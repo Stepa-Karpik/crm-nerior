@@ -18,7 +18,7 @@ class PlannerEventPayload(BaseModel):
 
 
 class PlannerClient:
-    def create_calendar(self, *, name: str, owner_user_id: UUID, scope: str) -> str:
+    def create_calendar(self, *, name: str, owner_user_id: str, scope: str) -> str:
         return f"crm-{scope}-cal-{uuid.uuid4()}"
 
     def create_or_update_task_event(self, payload: PlannerEventPayload, existing_event_id: str | None = None) -> tuple[str, str]:
