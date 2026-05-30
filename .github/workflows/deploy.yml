@@ -1,0 +1,43 @@
+name: Deploy CRM
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: nerior-crm-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER || 'root' }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            APP_DIR=/opt/nerior/crm
+            REPO_URL=https://github.com/Stepa-Karpik/crm-nerior.git
+            mkdir -p /opt/nerior
+            if [ ! -d "$APP_DIR/.git" ]; then
+              rm -rf "$APP_DIR"
+              git clone "$REPO_URL" "$APP_DIR"
+            fi
+            cd "$APP_DIR"
+            git fetch origin main
+            git reset --hard origin/main
+            if [ ! -f .env ]; then
+              cp .env.example .env
+            fi
+            docker network inspect nerior_shared >/dev/null 2>&1 || docker network create nerior_shared
+            docker compose --project-name nerior_crm up -d --build --remove-orphans
+            docker image prune -f

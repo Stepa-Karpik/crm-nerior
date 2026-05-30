@@ -1,0 +1,56 @@
+name: nerior_crm
+
+services:
+  crm-postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-nerior_crm}
+      POSTGRES_USER: ${POSTGRES_USER:-nerior}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nerior_crm_password}
+    volumes:
+      - crm_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  crm-api:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://nerior:nerior_crm_password@crm-postgres:5432/nerior_crm}
+      PLANNER_INTERNAL_URL: ${PLANNER_INTERNAL_URL:-http://smart_planner-api-1:8000/api/v1}
+      DOCUMENTS_INTERNAL_URL: ${DOCUMENTS_INTERNAL_URL:-http://documents-api-1:8200/api/v1}
+    depends_on:
+      crm-postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8300:8300"
+    networks:
+      - default
+      - nerior_shared
+
+  crm-frontend:
+    build:
+      context: ./frontend
+      args: {}
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://crm.nerior.ru/api/v1}
+      NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-https://admin.nerior.ru}
+      NEXT_PUBLIC_PLANNER_URL: ${NEXT_PUBLIC_PLANNER_URL:-https://planner.nerior.ru}
+      NEXT_PUBLIC_DOCUMENTS_URL: ${NEXT_PUBLIC_DOCUMENTS_URL:-https://documents.nerior.ru}
+    depends_on:
+      - crm-api
+    ports:
+      - "127.0.0.1:3100:3100"
+
+volumes:
+  crm_postgres_data:
+
+networks:
+  nerior_shared:
+    external: true
